@@ -5647,7 +5647,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68212bfce91cd41e5b32d7f078ee4d8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _collider: {fileID: 3636156328165342887}
+  _attackCollider: {fileID: 3636156328165342887}
   _enemy: {fileID: 3742347315031537066}
   _attackMode: 1
 --- !u!1 &3636156328263847748
@@ -7792,6 +7792,7 @@ MonoBehaviour:
     m_Bits: 128
   _life: 0
   _lifeMax: 200
+  _lifeTdb: 0
   _enemyFine: 1
 --- !u!114 &3742347315031537069
 MonoBehaviour:
@@ -7805,20 +7806,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ac395bacb321414f8fa53d5e8630318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _collider: {fileID: 3636156326986010032}
-  _par: {fileID: 3072112813640885206}
+  _damageCollider: {fileID: 3636156326986010032}
+  _parObj: {fileID: 3072112813640885206}
+  _parColor:
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 1, g: 0, b: 0.5339489, a: 1}
+  - {r: 0, g: 0.5174837, b: 1, a: 1}
+  - {r: 1, g: 0.7354885, b: 0, a: 1}
+  _audio:
+  - {fileID: 8300000, guid: f4100a2b6f2254b599c0894bd41f65e4, type: 3}
+  - {fileID: 8300000, guid: a4fce41a661fb433abf1414aa9b2abaf, type: 3}
+  - {fileID: 8300000, guid: c636e90d2383b4b8a951a4df12d717f0, type: 3}
   _attackTime1: 1
   _attackTime2: 1
-  _randomAttribute: 0
-  _red: 0
-  _blue: 0
-  _yellow: 0
-  _fire: 0
-  _ice: 0
-  _thunder: 0
-  _attackSE1: {fileID: 0}
-  _attackSE2: {fileID: 0}
-  _attackSE3: {fileID: 0}
+  _attackType: 0
 --- !u!1 &3742358188252137774
 GameObject:
   m_ObjectHideFlags: 0

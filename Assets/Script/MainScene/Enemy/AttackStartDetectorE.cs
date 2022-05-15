@@ -1,3 +1,6 @@
+
+//攻撃開始用コライダーにPlayerタグのオブジェクトが接触したら敵の攻撃モーションが開始する
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +8,7 @@ using UnityEngine;
 public class AttackStartDetectorE : MonoBehaviour
 {
     Animator _animator;
-    public Collider _collider;
+    public Collider _attackCollider;
     public EnemyController _enemy;
     public bool _attackMode=true;
 
@@ -29,7 +32,7 @@ public class AttackStartDetectorE : MonoBehaviour
     {
         if (_enemy._life < 1)
         {
-            _collider.enabled = false;
+            _attackCollider.enabled = false;
             _animator.ResetTrigger("attack1");
         }
         if (_attackMode == false)

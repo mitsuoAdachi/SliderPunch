@@ -7618,7 +7618,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _timer: {fileID: 548945009}
-  _colDete: {fileID: 205609653}
   _punchButton: {fileID: 1811114926}
   _reloadButton: {fileID: 2013018597}
   _timePlus: {fileID: 94072679}
@@ -7626,12 +7625,15 @@ MonoBehaviour:
   - {fileID: 53141350}
   - {fileID: 1126068996}
   - {fileID: 1808060612}
-  _upSlide: 010101
-  _panchMode: 1
-  _speed01: 0
-  _speed2: 0
+  _onSlide: 010100
+  _speed:
+  - 0
+  - 0
+  - 0
+  _colDete: {fileID: 205609653}
   _panchDamage: 0
   _plusTime: 0
+  _panchMode: 1
 --- !u!1 &572220506
 GameObject:
   m_ObjectHideFlags: 0
@@ -9581,7 +9583,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 100
   m_WholeNumbers: 1
-  m_Value: 25
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -17258,6 +17260,38 @@ PrefabInstance:
       propertyPath: _attackSE3
       value: 
       objectReference: {fileID: 1553802647}
+    - target: {fileID: 3742347315031537069, guid: 2ef8f7fcddfe847519b9557c872cf6ce, type: 3}
+      propertyPath: attackType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742347315031537069, guid: 2ef8f7fcddfe847519b9557c872cf6ce, type: 3}
+      propertyPath: parthicleColor.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742347315031537069, guid: 2ef8f7fcddfe847519b9557c872cf6ce, type: 3}
+      propertyPath: parthicleColor.Array.data[0].b
+      value: 0.082013145
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742347315031537069, guid: 2ef8f7fcddfe847519b9557c872cf6ce, type: 3}
+      propertyPath: parthicleColor.Array.data[0].g
+      value: 0.082013145
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742347315031537069, guid: 2ef8f7fcddfe847519b9557c872cf6ce, type: 3}
+      propertyPath: parthicleColor.Array.data[0].r
+      value: 0.9150943
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742347315031537069, guid: 2ef8f7fcddfe847519b9557c872cf6ce, type: 3}
+      propertyPath: parthicleColor.Array.data[1].b
+      value: 0.9622642
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742347315031537069, guid: 2ef8f7fcddfe847519b9557c872cf6ce, type: 3}
+      propertyPath: parthicleColor.Array.data[1].g
+      value: 0.30418387
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742347315031537069, guid: 2ef8f7fcddfe847519b9557c872cf6ce, type: 3}
+      propertyPath: parthicleColor.Array.data[1].r
+      value: 0.104396604
+      objectReference: {fileID: 0}
     - target: {fileID: 3745324399828046430, guid: 2ef8f7fcddfe847519b9557c872cf6ce, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.069056205
@@ -19319,20 +19353,8 @@ PrefabInstance:
       objectReference: {fileID: 560691282}
     - target: {fileID: 3742347315031537068, guid: 2ef8f7fcddfe847519b9557c872cf6ce, type: 3}
       propertyPath: m_Name
-      value: Enemy2 (3)
+      value: 'Enemy2 '
       objectReference: {fileID: 0}
-    - target: {fileID: 3742347315031537069, guid: 2ef8f7fcddfe847519b9557c872cf6ce, type: 3}
-      propertyPath: _attackSE1
-      value: 
-      objectReference: {fileID: 788579458}
-    - target: {fileID: 3742347315031537069, guid: 2ef8f7fcddfe847519b9557c872cf6ce, type: 3}
-      propertyPath: _attackSE2
-      value: 
-      objectReference: {fileID: 1110198263}
-    - target: {fileID: 3742347315031537069, guid: 2ef8f7fcddfe847519b9557c872cf6ce, type: 3}
-      propertyPath: _attackSE3
-      value: 
-      objectReference: {fileID: 1553802647}
     - target: {fileID: 3745850843570270966, guid: 2ef8f7fcddfe847519b9557c872cf6ce, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -21496,17 +21518,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _guardPS: {fileID: 1269193632}
   _panchPS: {fileID: 326725430}
-  _attackSE: {fileID: 1021068245}
-  _guardSE: {fileID: 646780725}
+  _audio:
+  - {fileID: 1021068245}
+  - {fileID: 646780725}
+  _life: 0
+  _rotSpeed: 10
+  _limitSpeedX: 0.028
+  _limitSpeedY: 0.037
   _canvasUI: {fileID: 1861807391}
   _gameOverUI: {fileID: 361184539}
   _damageCollider: {fileID: 500876150}
   _collisionDetector: {fileID: 205609653}
-  _rotSpeed: 10
-  _limitSpeedX: 0.028
-  _limitSpeedY: 0.037
   _playerFine: 1
-  _life: 0
 --- !u!114 &3020879244860628451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21610,7 +21633,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 403859358249581341, guid: aeffb7e712e4e4c3f9df11e2be300fb2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.19
+      value: 0.94
       objectReference: {fileID: 0}
     - target: {fileID: 403859358249581341, guid: aeffb7e712e4e4c3f9df11e2be300fb2, type: 3}
       propertyPath: m_LocalRotation.w
@@ -21644,18 +21667,6 @@ PrefabInstance:
       propertyPath: _sliderController
       value: 
       objectReference: {fileID: 560691282}
-    - target: {fileID: 9043466507278167528, guid: aeffb7e712e4e4c3f9df11e2be300fb2, type: 3}
-      propertyPath: _attackSE1
-      value: 
-      objectReference: {fileID: 788579458}
-    - target: {fileID: 9043466507278167528, guid: aeffb7e712e4e4c3f9df11e2be300fb2, type: 3}
-      propertyPath: _attackSE2
-      value: 
-      objectReference: {fileID: 1110198263}
-    - target: {fileID: 9043466507278167528, guid: aeffb7e712e4e4c3f9df11e2be300fb2, type: 3}
-      propertyPath: _attackSE3
-      value: 
-      objectReference: {fileID: 1553802647}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aeffb7e712e4e4c3f9df11e2be300fb2, type: 3}
 --- !u!136 &3092888284890241408
@@ -22195,7 +22206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68212bfce91cd41e5b32d7f078ee4d8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _collider: {fileID: 3092888286418989769}
+  _attackCollider: {fileID: 3092888286418989769}
   _enemy: {fileID: 7594572786546098525}
   _attackMode: 1
 --- !u!65 &3092888286418989769
@@ -31688,20 +31699,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ac395bacb321414f8fa53d5e8630318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _collider: {fileID: 3092888284912107998}
-  _par: {fileID: 3618725021378195384}
+  _damageCollider: {fileID: 3092888284912107998}
+  _parObj: {fileID: 3618725021378195384}
+  _parColor:
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 1, g: 0, b: 0.4871788, a: 1}
+  - {r: 0, g: 0.5200348, b: 1, a: 1}
+  - {r: 1, g: 0.85638046, b: 0, a: 1}
+  _audio:
+  - {fileID: 8300000, guid: f4100a2b6f2254b599c0894bd41f65e4, type: 3}
+  - {fileID: 8300000, guid: a4fce41a661fb433abf1414aa9b2abaf, type: 3}
+  - {fileID: 8300000, guid: c636e90d2383b4b8a951a4df12d717f0, type: 3}
   _attackTime1: 1
   _attackTime2: 0.5
-  _randomAttribute: 0
-  _red: 0
-  _blue: 0
-  _yellow: 0
-  _fire: 0
-  _ice: 0
-  _thunder: 0
-  _attackSE1: {fileID: 788579458}
-  _attackSE2: {fileID: 1110198263}
-  _attackSE3: {fileID: 1553802647}
+  _attackType: 0
 --- !u!1 &7594572786546098524
 GameObject:
   m_ObjectHideFlags: 0

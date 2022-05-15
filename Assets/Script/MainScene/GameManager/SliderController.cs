@@ -1,3 +1,6 @@
+
+//３つのスライダーを制御、ダメージ計算、制限時間にボーナス、プレイヤーの攻撃開始
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,26 +8,33 @@ using UnityEngine.UI;
 
 public class SliderController : MonoBehaviour
 {
-    Animator _playerAnimator;
-    public Timer _timer;
+    [SerializeField]
+    private Timer _timer;
+
+    [SerializeField]
+    private GameObject _punchButton;
+
+    [SerializeField]
+    private GameObject _reloadButton;
+
+    [SerializeField]
+    private GameObject _timePlus;
+    [SerializeField]
+    private Slider[] _slider = new Slider[3];
+    [SerializeField]
+    private bool[] _onSlide = new bool[3];
+    [SerializeField]
+    private float[] _speed = new float[3];
+
+    private Animator _playerAnimator;
+
     public CollisionDetector _colDete;
-    public GameObject _punchButton;
-    public GameObject _reloadButton;
-    public GameObject _timePlus;
 
-    public Slider[] _slider = new Slider[3];
-    public bool[] _upSlide = new bool[3];
-    public bool _panchMode=true;
-    bool _sliderMode = true;
-
-    public float _speed01;
-    public float _speed2;
     public float _panchDamage;
     public float _plusTime;
 
-    float _slider0diff;
-    float _slider1diff;
-    float _slider2diff;
+    public bool _panchMode;
+    private bool _sliderMode = true;
 
     // Start is called before the first frame update
     void Start()
@@ -35,25 +45,34 @@ public class SliderController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //スライダーが動くモード
         if (_sliderMode == true)
         {
-            _speed01 = 50f;
-            _speed2 = 30f;
+            _speed[0] = 80f;
+            _speed[1] = 120f;
+            _speed[2] = 160f;
             RollSlider();
-
+        }
+        //攻撃できる状態のモード
         if (_panchMode == true)
+        { 
             _punchButton.SetActive(true);
             _reloadButton.SetActive(false);
         }
     }
-
+    /// <summary>
+    /// スライダーを止める　→　ダメージを計算する　→　プレイヤーが攻撃を開始する。
+    /// </summary>
     public void OnStopSliderButton()
     {
+        float[] _sliderDiff = new float[3];
+
         _panchMode = false;
         _sliderMode = false;
 
-        _speed01 = 0;
-        _speed2 = 0;
+        for(int i = 0; i<_speed.Length; i++)
+        _speed[i] = 0;
+
         _punchButton.SetActive(false);
         _reloadButton.SetActive(true);
 
@@ -62,35 +81,35 @@ public class SliderController : MonoBehaviour
         //一番上スライダーと敵弱点数との差値
         if (_colDete._weakNumber._weakNumber < _slider[0].value)
         {
-                _slider0diff = _slider[0].value - _colDete._weakNumber._weakNumber;
+            _sliderDiff[0] = _slider[0].value - _colDete._weakNumber._weakNumber;
         }
         else
         {
-            _slider0diff = _colDete._weakNumber._weakNumber - _slider[0].value;
+            _sliderDiff[0] = _colDete._weakNumber._weakNumber - _slider[0].value;
         }
 
-        //????????????????????
+        //中央スライダーと敵弱点数との差値
         if (_colDete._weakNumber._weakNumber < _slider[1].value)
         {
-            _slider1diff = _slider[1].value - _colDete._weakNumber._weakNumber;
+            _sliderDiff[1] = _slider[1].value - _colDete._weakNumber._weakNumber;
         }
         else
         {
-            _slider1diff = _colDete._weakNumber._weakNumber - _slider[1].value;
+            _sliderDiff[1] = _colDete._weakNumber._weakNumber - _slider[1].value;
         }
 
-        //?????????????????????
+        //一番下スライダーと敵弱点数との差値
         if (_colDete._weakNumber._weakNumber < _slider[2].value)
         {
-            _slider2diff = _slider[2].value - _colDete._weakNumber._weakNumber;
+            _sliderDiff[2] = _slider[2].value - _colDete._weakNumber._weakNumber;
         }
         else
         {
-            _slider2diff = _colDete._weakNumber._weakNumber - _slider[2].value;
+            _sliderDiff[2] = _colDete._weakNumber._weakNumber - _slider[2].value;
         }
 
-        _panchDamage = 100 - _slider0diff - _slider1diff - _slider2diff;
-        //Mathf.Clamp(_panchDamage, 0, 100);
+        _panchDamage = 100 - _sliderDiff[0] - _sliderDiff[1] - _sliderDiff[2];
+
         if (_panchDamage < 0)
             _panchDamage = 0;
 
@@ -101,7 +120,7 @@ public class SliderController : MonoBehaviour
             _timePlus.SetActive(true);
         }
 
-        //Debug.Log("PanchDamage"+_panchDamage);
+        //攻撃モーションの開始
         _playerAnimator.SetTrigger("attack1");
     }
     private IEnumerator PanchModeCoroutine()
@@ -112,22 +131,27 @@ public class SliderController : MonoBehaviour
         _panchMode = true;
     }
 
+    /// <summary>
+    /// ３つのスライダーが左右に違う速度で自動で動くよう制御
+    /// </summary>
     public void RollSlider()
     {
         for (int i = 0; i < _slider.Length; i++)
-            if (_slider[i].value == 100 || _upSlide[i] == false)
+            if (_slider[i].value == 100 || _onSlide[i] == false)
             {
-                _upSlide[i] = false;
-                _slider[i].value -= _speed01 * Time.deltaTime;
-                _slider[2].value -= _speed2 * Time.deltaTime;
+                _onSlide[i] = false;
+
+                if (_onSlide[i] == false)
+                    _slider[i].value -= _speed[i] * Time.deltaTime;
             }
 
         for (int i = 0; i < _slider.Length; i++)
-            if (_slider[i].value == 0 || _upSlide[i] == true)
+            if (_slider[i].value == 0 || _onSlide[i] == true)
             {
-                _upSlide[i] = true;
-                _slider[i].value += _speed01 * Time.deltaTime;
-                _slider[2].value += _speed2 * Time.deltaTime;
+                _onSlide[i] = true;
+
+                if (_onSlide[i] == true)
+                   _slider[i].value += _speed[i] * Time.deltaTime;
             }
     }
 }

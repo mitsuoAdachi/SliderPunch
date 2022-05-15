@@ -5,27 +5,40 @@ using Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
-    NavMeshAgent _agent;
-    Animator _animator;
-    Vector3 _latestPos;
-    public ParticleSystem _guardPS;
-    public ParticleSystem _panchPS;
-    public GameObject _attackSE;
-    public GameObject _guardSE;
-    public GameObject _canvasUI;
-    public GameObject _gameOverUI;
-    public Collider _damageCollider;
-    public CollisionDetector _collisionDetector;
+    private NavMeshAgent _agent;
+    private Animator _animator;
+    private Vector3 _latestPos;
 
-    public float _rotSpeed;
-    public float _limitSpeedX;
-    public float _limitSpeedY;
-    public bool _playerFine = true;
+    [Header("攻撃・防御エフェクト")]
+    [SerializeField]
+    private ParticleSystem _guardPS, _panchPS;
+
+    [Header("音響")]
+    [SerializeField]
+    private GameObject[] _audio;
+
+    [Header("プレイヤー体力")]
+    [SerializeField]
+    private float _life;
+    private float _lifeMax = 1;
+
+    [Header("移動・回転速度")]
+    [SerializeField]
+    private float _rotSpeed, _limitSpeedX, _limitSpeedY;
+
+    [SerializeField]
+    private GameObject _canvasUI, _gameOverUI;
+
+    [SerializeField]
+    private Collider _damageCollider;
+
+    [SerializeField]
+    private CollisionDetector _collisionDetector;
+
     private bool _playerGuard = false;
     private bool _noise = false;
 
-    float _lifeMax = 1;
-    public float _life;
+    public bool _playerFine = true;
 
     // Start is called before the first frame update
     void Start()
@@ -71,7 +84,7 @@ public class PlayerController : MonoBehaviour
 
         }
 
-        //パンチの振動
+        //攻撃時にカメラを振動させる
         if (_noise == true)
         {
             var _noise = GetComponent<CinemachineImpulseSource>();
@@ -79,7 +92,7 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(OffNoiseCoroutine());
         }
 
-        //キーボード入力
+        //キーボード入力(攻撃ボタンはAttackDetectorで処理)
         if(Input.GetKey(KeyCode.Z))
         {
             OnRedGuard();
@@ -98,13 +111,12 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         _noise = false;
-        _attackSE.SetActive(false);
     }
 
     //被ダメージ判定
     public void Damage(int _damage)
     {
-        if (_playerFine && _playerGuard==false)
+        if (_playerFine && _playerGuard==false)　//ガード中はダメージを受けない
         {
             _life -= _damage;
         }
@@ -126,17 +138,22 @@ public class PlayerController : MonoBehaviour
     //攻撃関連処理
     public void OnPanchEffect()
     {
-        _attackSE.SetActive(true);
+        _audio[0].SetActive(true);
         _damageCollider.enabled = true;
         _panchPS.Play();
         _noise = true;
+        StartCoroutine(OffAttack());
     }
-    public void OffAttack()
+    private IEnumerator OffAttack()
     {
+        yield return new WaitForSeconds(0.2f);
         _damageCollider.enabled = false;
+
+        yield return new WaitForSeconds(1f);
+        _audio[0].SetActive(false);
     }
 
-    //防御処理:敵の攻撃属性をboolで取得し対応したボタンだけ機能する
+    //防御処理:プレイヤーが生きていて、対応した敵攻撃属性がtrueならガードする
     public void OnGuard(bool _attribute)
     {
         if (_playerFine & _attribute)
@@ -144,26 +161,30 @@ public class PlayerController : MonoBehaviour
             _playerGuard = true;
             _animator.SetTrigger("guard");
             _guardPS.Play();
-            _guardSE.SetActive(true);
+            _audio[1].SetActive(true);
             StartCoroutine(OffPlayerGuard());
         }
     }
+
+    /// <summary>
+    /// 敵の攻撃タイプをAttackSwitchクラスより取得し、対応した各ボタンへ紐付けする
+    /// </summary>
     public void OnRedGuard()
     {
-        OnGuard(_collisionDetector._attackSwitch._red);
+        OnGuard(_collisionDetector._attackSwitch._attackType==AttackType.Fire);
     }
     public void OnBlueGuard()
     {
-        OnGuard(_collisionDetector._attackSwitch._blue);
+        OnGuard(_collisionDetector._attackSwitch._attackType == AttackType.Ice);
     }
     public void OnYellowGuard()
     {
-        OnGuard(_collisionDetector._attackSwitch._yellow);
+        OnGuard(_collisionDetector._attackSwitch._attackType == AttackType.Thunder);
     }
     private IEnumerator OffPlayerGuard()
     {
         yield return new WaitForSeconds(1);
         _playerGuard = false;
-        _guardSE.SetActive(false);
+        _audio[1].SetActive(false);
     }
 }

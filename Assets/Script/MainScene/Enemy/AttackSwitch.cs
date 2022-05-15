@@ -1,127 +1,122 @@
+
+//敵の攻撃モードを制御、攻撃時の色の変化、攻撃時のSE
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 
+/// private関数
+/// Start() , AttackStart() , ParticleColorSwitch() , AttackModeChange()
+/// ParticleColorChange(int index) , OnAttckSE();
+/// 
+/// public関数
+/// enum AttackType
+///
+/// コルーチン
+/// ParticleColorRetrun() , AttackSECoroutine()
+///
+/// アニメーションイベント
+/// AttackStart()
+/// 
+/// </summary>
+
+public enum AttackType
+{
+    None,
+    Fire,
+    Ice,
+    Thunder
+}
+
 public class AttackSwitch : MonoBehaviour
 {
-    ParticleSystem.MainModule _particle;
-    ParticleSystem.TrailModule _trail;
+    private ParticleSystem.MainModule _particle;
+    private ParticleSystem.TrailModule _trail;
 
-    public Collider _collider;
-    public ParticleSystem _par;
-    public float _attackTime1 = 2f;
-    public float _attackTime2 = 1f;
-    public int _randomAttribute;
+    [SerializeField]
+    private Collider _damageCollider;
 
-    public bool _red = false;
-    public bool _blue = false;
-    public bool _yellow = false;
+    [SerializeField]
+    private ParticleSystem _parObj;
+    [SerializeField]
+    private Color[] _parColor;
 
-    public bool _fire=false;
-    public bool _ice=false;
-    public bool _thunder=false;
+    [SerializeField]
+    private AudioClip[] _audio;
 
-    public GameObject _attackSE1;
-    public GameObject _attackSE2;
-    public GameObject _attackSE3;
+    [SerializeField]
+    private float _attackTime1 = 2f, _attackTime2 = 1f;
+
+    public AttackType _attackType = AttackType.None;
 
     // Start is called before the first frame update
     void Start()
     {
-        _particle = _par.GetComponent<ParticleSystem>().main;
-        _trail = _par.GetComponent<ParticleSystem>().trails;
-
-
+        _particle = _parObj.GetComponent<ParticleSystem>().main;
+        _trail = _parObj.GetComponent<ParticleSystem>().trails;
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// アニメーションイベントAttackStart()
+    /// </summary>
+    private void AttackStart()
     {
-    }
-
-    public void AttackStart()
-    {
-        OnAttckSE();
-        ParticleColorChange();
+        OnAttckSE(0);
+        ParticleColorSwitch();
         StartCoroutine(ParticalColorReturn());
     }
-
-    public void AttackStart_Enemy1()
-    {
-        OnAttckSE();
-        StartCoroutine(ParticalColorReturn());
-    }
-
-    public void ParticleColorChange()
-    {
-        _randomAttribute = Random.Range(0, 100);
-
-        if (_randomAttribute < 33)
+        private void OnAttckSE(int index)
         {
-            OnParticalColorChange(Color.red);
-            _fire = true;
+           AudioSource.PlayClipAtPoint(_audio[index], transform.position);
+           StartCoroutine(AttackSECoroutine());
         }
-        else if (_randomAttribute < 66)
+            private IEnumerator AttackSECoroutine()
+            {
+                yield return new WaitForSeconds(0.5f);
+                AudioSource.PlayClipAtPoint(_audio[1], transform.position);
+
+                yield return new WaitForSeconds(0.5f);
+                AudioSource.PlayClipAtPoint(_audio[2], transform.position);
+            }
+
+        private void ParticleColorSwitch()
         {
-            OnParticalColorChange(Color.cyan);
-            _ice = true;
+            int _randomAttribute = Random.Range(0, 100);
+
+            if (_randomAttribute < 33)
+            {
+                ParticalColorChange(1);
+                _attackType = AttackType.Fire;
+
+            }
+            else if (_randomAttribute < 66)
+            {
+                ParticalColorChange(2);
+                _attackType = AttackType.Ice;
+            }
+            else
+            {
+                ParticalColorChange(3);
+                _attackType = AttackType.Thunder;
+            }
         }
-        else
-        {
-            OnParticalColorChange(Color.yellow);
-            _thunder = true;
-        }
+            private IEnumerator ParticalColorReturn()
+            {
+                yield return new WaitForSeconds(_attackTime1);
+                _damageCollider.enabled = true;
 
-    }
+                yield return new WaitForSeconds(_attackTime2);
+                ParticalColorChange(0);
+                _attackType = AttackType.None;
+                _damageCollider.enabled = false;
+            }
 
-    public void AttackModeChange()
-    {
-        if (_fire == true)
-            _red = true;
+                private void ParticalColorChange(int index)
+                {
+                    _particle.startColor = _parColor[index];
+                    _trail.colorOverTrail = _parColor[index];
+                }
 
-        if (_ice == true)
-            _blue = true;
-
-        if (_thunder == true)
-            _yellow = true;
-
-    }
-    public void OnParticalColorChange(Color _color)
-    {
-        _particle.startColor = _color;
-        _trail.colorOverTrail = _color;
-    }
-    private IEnumerator ParticalColorReturn()
-    {
-        yield return new WaitForSeconds(_attackTime1);
-        _collider.enabled = true;
-
-        yield return new WaitForSeconds(_attackTime2);
-        OnParticalColorChange(Color.white);
-        _fire = false;
-        _ice = false;
-        _thunder = false;
-        _red = false;
-        _blue = false;
-        _yellow = false;
-
-        _collider.enabled = false;
-    }
-
-    public void OnAttckSE()
-    {
-        _attackSE1.SetActive(true);
-        StartCoroutine(AttackSECoroutine());
-    }
-    private IEnumerator AttackSECoroutine()
-    {
-        yield return new WaitForSeconds(0.5f);
-        _attackSE2.SetActive(true);
-        yield return new WaitForSeconds(0.5f);
-        _attackSE3.SetActive(true);
-        yield return new WaitForSeconds(2);
-        _attackSE1.SetActive(false);
-        _attackSE2.SetActive(false);
-        _attackSE3.SetActive(false);
-    }
 }
